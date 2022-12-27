@@ -37,3 +37,6 @@ root ---@folder
 
 > **Note**
 > The aforementioned functions can be found [here](./src/).
+
+
+<img src="https://github-readme-stats.vercel.app/api/pin/?username=proudCobolWriter&repo=roblox-luau-countit-plugin&bg_color=30,e96443,904e95&title_color=fff&text_color=fff&icon_color=fff" />
