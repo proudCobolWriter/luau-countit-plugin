@@ -639,7 +639,9 @@ GUI.Parent = CoreGui
 
 -- Declaring module
 
+
 local Module = {}
+
 
 function Module:Init(PLUGIN, PLUGIN_BUTTON)
 	Plugin = PLUGIN
@@ -653,8 +655,10 @@ function Module:Init(PLUGIN, PLUGIN_BUTTON)
 	EXIT_BUTTON_HOVER_CONNECTION = ExitButton.MouseEnter:Connect(exitButtonMouseHover)
 end
 
+
 function Module:Terminate()
 	buttonTerminate()
 end
+
 
 return Module
