@@ -24,3 +24,5 @@ This plugin also allows you to keep track of how many lines and characters you h
 ```lua
 local 
 ```
+
+_Note: Les rangs sont calculés sur la base des statistiques de l'utilisateur, voir [src/calculateRank.js](../src/calculateRank.js)_
