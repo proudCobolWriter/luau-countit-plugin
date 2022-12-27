@@ -1,6 +1,19 @@
-<div style="display: flex; align-items: center">
-<img src="https://cdn.discordapp.com/attachments/735132698603159562/1057328546848190585/plugin_icon.png" style="max-width: 50px" alt="plugin icon"></img>
-<p style="margin: 0 8px">
+<style>
+	#div1 {
+    	display: flex;
+        align-items: center
+    }
+    #img1 {
+    	max-width: 50px
+    }
+    #p1 {
+    	margin: 0 8px
+    }
+</style>
+
+<div id="div1">
+<img id="img1" src="https://cdn.discordapp.com/attachments/735132698603159562/1057328546848190585/plugin_icon.png"  alt="plugin icon"></img>
+<p id="p1">
 Ever dreamt of flexing to your friends with the amount of work you put into your game but in a <b>refined</b> and <b>elegant</b> way instead of a simple print? Then here is your chance!
 </p>
 </div>
