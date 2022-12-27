@@ -21,10 +21,18 @@ This plugin also allows you to keep track of how many lines and characters you h
 
 <img src="https://cdn.discordapp.com/attachments/735132698603159562/1057338591006687272/gif2.gif" alt="example use"></img>
 
+## 
+
 ```lua
-local 
+root.PluginInit ---@script PluginInit  Setups plugin and handles plugin-studio interactions
+require(root.LinesOfCodeFrameInit) ---@module LinesOfCodeFrameInit  Initializes LinesOfCode Frame
+require(root.ResponsiveFrame) ---@module ResponsiveFrame  Handles the position and the size of a given frame
+require(root.MonitorScripts) ---@module MonitorScripts  Self-explanatory, watches script changes via ScriptEditorService
+require(root.Util) ---@module Util  Just a bunch of utility functions to complement the plugin and keep things clean
+require(root.VirusSignatures) ---@module VirusSignatures  Identifies viruses
+require(root.CountLines) ---@module CountLines  Returns advanced script statistics about the game
+require(root.GraphCreator) ---@module GraphCreator  Creates and animates graphs using TweenService
 ```
 
-
 > **Note**
-> Available ranks are S+ (top 1%), S (top 25%), A++ (top 45%), A+ (top 60%), and B+ (everyone). The values are calculated by using the [cumulative distribution function](https://en.wikipedia.org/wiki/Cumulative_distribution_function) using commits, contributions, issues, stars, pull requests, followers, and owned repositories. The implementation can be investigated at [src/calculateRank.js](./src/calculateRank.js).
+> The aforementioned functions can be found [here](./src/).
