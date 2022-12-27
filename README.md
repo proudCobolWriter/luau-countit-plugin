@@ -6,9 +6,9 @@ Ever dreamt of flexing to your friends with the amount of work you put into your
 </p>
     <a href="">See the original post</a>
     ·
-    <a href="">See the demo</a>
+    <a href="#Demonstration">See the demo</a>
     ·
-    <a href="">Report bug or request feature</a>
+    <a href="https://github.com/proudCobolWriter/roblox-luau-countit-plugin/issues/new/choose">Report bug or request feature</a>
 </div>
 
 ---
