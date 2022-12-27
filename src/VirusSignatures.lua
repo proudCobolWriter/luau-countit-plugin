@@ -5,6 +5,13 @@
 -- Merry Christmas!
 -- */
 
+-- Type definitions
+
+export type VirusResult = {
+	severityIndex: number,
+	flaggedScript: LuaSourceContainer
+}
+
 -- Feel free to contribute by expanding the following table,
 -- Any function with key "any" will run on all scripts on this place, whereas
 -- more specific keys like ["vaccine"] will only run on scripts named like so
@@ -24,17 +31,17 @@ local VirusSignatures = {
 	}
 }
 
--- anonymous function (processedScript: Instance): { severityIndex: number, flaggedScript: Instance }
---	 				  ^ Virus checks a given script Instance
---	 				  *
---	 				  * @param processedScript script instance that is being checked
---	 				  *
---	 				  * @return dictionary (=hashtable)
---	 				  ** 		^keys:
---					  ** 		 ["severityIndex"]: number,
---	 				  ** 		 ["flaggedScript"]: Instance
+-- anonymous function (processedScript: Instance): VirusResult | nil
+--	 	      ^ Virus checks a given script Instance
+--	 	      *
+--	 	      * @param processedScript script instance that is being checked
+--	 	      *
+--	 	      * @return dictionary (=hashtable) of type VirusResult or nil
+--	 	      ** 	^keys:
+--		      ** 	 ["severityIndex"]: number,
+--	 	      ** 	 ["flaggedScript"]: Instance
 --
-return function(processedScript: LuaSourceContainer)
+return function(processedScript: LuaSourceContainer): VirusResult | nil
 	for _, func in ipairs(VirusSignatures["any"] or {}) do
 		local result = func()
 		if result.severityIndex > 0 then -- checks whether the severity level is anything above 0 (harmless)
@@ -48,4 +55,6 @@ return function(processedScript: LuaSourceContainer)
 			return result
 		end
 	end
+	
+	return
 end
