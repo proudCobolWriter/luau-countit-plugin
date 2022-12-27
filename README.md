@@ -24,14 +24,15 @@ This plugin also allows you to keep track of how many lines and characters you h
 ## 
 
 ```lua
-root.PluginInit ---@script PluginInit  Setups plugin and handles plugin-studio interactions
-require(root.LinesOfCodeFrameInit) ---@module LinesOfCodeFrameInit  Initializes LinesOfCode Frame
-require(root.ResponsiveFrame) ---@module ResponsiveFrame  Handles the position and the size of a given frame
-require(root.MonitorScripts) ---@module MonitorScripts  Self-explanatory, watches script changes via ScriptEditorService
-require(root.Util) ---@module Util  Just a bunch of utility functions to complement the plugin and keep things clean
-require(root.VirusSignatures) ---@module VirusSignatures  Identifies viruses
-require(root.CountLines) ---@module CountLines  Returns advanced script statistics about the game
-require(root.GraphCreator) ---@module GraphCreator  Creates and animates graphs using TweenService
+root ---@folder
+├── PluginInit ---@script PluginInit  Setups plugin and handles plugin-studio interactions
+├── LinesOfCodeFrameInit ---@module LinesOfCodeFrameInit  Initializes LinesOfCode Frame
+├── ResponsiveFrame ---@module ResponsiveFrame  Handles the position and the size of a given frame
+├── MonitorScripts ---@module MonitorScripts  Self-explanatory, watches script changes via ScriptEditorService
+├── Util ---@module Util  Just a bunch of utility functions to complement the plugin and keep things clean
+├── VirusSignatures ---@module VirusSignatures  Identifies viruses
+├── CountLines ---@module CountLines  Returns advanced script statistics about the game
+└── GraphCreator ---@module GraphCreator  Creates and animates graphs using TweenService
 ```
 
 > **Note**
