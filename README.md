@@ -21,7 +21,7 @@ This plugin also allows you to keep track of how many lines and characters you h
 
 <img src="https://cdn.discordapp.com/attachments/735132698603159562/1057338591006687272/gif2.gif" alt="example use"></img>
 
-## 
+## [Folder](./src/) hierarchy
 
 ```lua
 root ---@folder
