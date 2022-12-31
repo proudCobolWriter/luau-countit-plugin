@@ -33,11 +33,11 @@ local SHARED_MODULE_SERVICES = {
 local SERVER_SIDE_SERVICES = { ["ServerScriptService"] = true, ["ServerStorage"] = true, }
 
 -- function magiclines ( s: string ): (any) -> any
---	 		^
---	 		*
---			* @param s script source
---			*
---	 		* @return an iterator function
+--	    ^
+--	    *
+--	    * @param s script source
+--	    *
+--	    * @return an iterator function
 --
 local function magiclines(s: string): (any) -> any
 	if s:sub(-1) ~= "\n" then s = s .. "\n" end
@@ -45,11 +45,11 @@ local function magiclines(s: string): (any) -> any
 end
 
 -- function getLinesInScript ( processedScript: LuaSourceContainer ): ...number
---	 		^ Manipulates the given script's source to retrieve how much lines it contains
---	 		*
---			* @param processedScript script instance that is being checked
---			*
---	 		* @return tuple of 3 numbers
+--	    ^ Manipulates the given script's source to retrieve how much lines it contains
+--	    *
+--	    * @param processedScript script instance that is being checked
+--	    *
+--	    * @return tuple of 3 numbers
 --
 local function getLinesInScript(processedScript: LuaSourceContainer): ...number
 	local _, countNewlines = processedScript.Source:gsub('\n', '\n')
@@ -77,12 +77,12 @@ local function getLinesInScript(processedScript: LuaSourceContainer): ...number
 end
 
 -- function evaluateDuplicate ( cache: {LuaSourceContainer}, processedScript: LuaSourceContainer ): number
---	 		^ Iterates through all the scripts in cache to test whether or not there's a duplicate of processedScript
---	 		*
---			* @param cache weak table reference
---			* @param processedScript script instance that is being checked
---			*
---	 		* @return 1 if a duplicate has been found, 0 if none has been found
+--	    ^ Iterates through all the scripts in cache to test whether or not there's a duplicate of processedScript
+--	    *
+--	    * @param cache weak table reference
+--	    * @param processedScript script instance that is being checked
+--	    *
+--	    * @return 1 if a duplicate has been found, 0 if none has been found
 --
 local function evaluateDuplicate(cache: {LuaSourceContainer}, processedScript: LuaSourceContainer): number
 	local duplicate = 0
@@ -101,14 +101,14 @@ local cachedScripts = setmetatable({}, { __mode = "k" }) -- used to find duplica
 
 
 -- anonymous function ( checkVirusesOnly: boolean ): ...any
---	 				  ^ Returns advanced script statistics about the game in the form of a dictionary (=hashtable)
---	 				  *
---	 				  * @param checkVirusesOnly self-explanatory parameter, defines whether or not anything else than viruses should be checked
---	 				  *
---	 				  * @return tuple containing both the dictionary and the time it took to compute the values in ms
---	 				  ** 								  ^example keys:
---					  ** 								   ["totalLines"] = 10,
---	 				  ** 								   ["totalServices"] = 2
+--	     ^ Returns advanced script statistics about the game in the form of a dictionary (=hashtable)
+--	     *
+--	     * @param checkVirusesOnly self-explanatory parameter, defines whether or not anything else than viruses should be checked
+--	     *
+--	     * @return tuple containing both the dictionary and the time it took to compute the values in ms
+--	     ** 								  ^example keys:
+--	     ** 								   ["totalLines"] = 10,
+--	     ** 								   ["totalServices"] = 2
 --
 return function(checkVirusesOnly: boolean): ...any
 	local startingTime = DateTime.now().UnixTimestampMillis

@@ -32,14 +32,14 @@ local VirusSignatures = {
 }
 
 -- anonymous function ( processedScript: Instance ): VirusResult | nil
---	 				  ^ Virus checks a given script Instance
---	 				  *
---	 				  * @param processedScript script instance that is being checked
---	 				  *
---	 				  * @return dictionary (=hashtable) of type VirusResult or nil
---	 				  ** 		^keys:
---					  ** 		 ["severityIndex"]: number,
---	 				  ** 		 ["flaggedScript"]: Instance
+--	     ^ Virus checks a given script Instance
+--	     *
+--	     * @param processedScript script instance that is being checked
+--	     *
+--	     * @return dictionary (=hashtable) of type VirusResult or nil
+--	     ** 		^keys:
+--	     ** 		 ["severityIndex"]: number,
+--	     ** 		 ["flaggedScript"]: Instance
 --
 return function(processedScript: LuaSourceContainer): VirusResult | nil
 	for _, func in ipairs(VirusSignatures["any"] or {}) do
