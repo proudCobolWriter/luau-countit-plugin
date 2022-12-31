@@ -100,7 +100,7 @@ end
 local cachedScripts = setmetatable({}, { __mode = "k" }) -- used to find duplicates
 
 
--- anonymous function (checkVirusesOnly: boolean): ...any
+-- anonymous function ( checkVirusesOnly: boolean ): ...any
 --	 				  ^ Returns advanced script statistics about the game in the form of a dictionary (=hashtable)
 --	 				  *
 --	 				  * @param checkVirusesOnly self-explanatory parameter, defines whether or not anything else than viruses should be checked

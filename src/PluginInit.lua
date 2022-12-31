@@ -38,7 +38,7 @@ local RESERVED_GUI_NAMES = {
 -- Creating plugin
 
 local Toolbar = plugin:CreateToolbar("Poggers' Toolbox")
-local PluginCountButton = Toolbar:CreateButton("Toggle project stats", "An utility that counts all the lines of code in your project", "rbxassetid://11931593701")
+local PluginCountButton = Toolbar:CreateButton("Toggle project stats", "An utility that counts all the lines of code in your project", "rbxassetid://11931509248")
 
 -- Setup the plugin
 

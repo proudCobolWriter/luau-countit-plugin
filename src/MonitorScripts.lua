@@ -46,12 +46,12 @@ local Module = {
 -- Main functions
 
 -- function isScriptOpened ( doc: ScriptDocument ): any
---	    ^
---	    * Checks if the given script can be found in table SCRIPTS_OPENED
---	    *
---	    * @param doc ScriptDocument Instance
---	    *
---	    * @return tuple of boolean and number
+--	 	  	^
+--		  	* Checks if the given script can be found in table SCRIPTS_OPENED
+--		  	*
+--		  	* @param doc ScriptDocument Instance
+--		  	*
+--	 	 	* @return tuple of boolean and number
 --
 local function isScriptOpened(doc: ScriptDocument): ...any
 	local scriptOpened, scriptIndex = false, nil
@@ -65,12 +65,12 @@ local function isScriptOpened(doc: ScriptDocument): ...any
 end
 
 -- function saveData ( PLUGIN: Plugin ): nil
---	    ^
---          * Saves plugin data (lines & chars written...)
---	    *
---	    * @param PLUGIN Plugin Instance
---	    *
---	    * @return void
+--	 	  	^
+--		  	* Saves plugin data (lines & chars written...)
+--		  	*
+--		  	* @param PLUGIN Plugin Instance
+--		  	*
+--	 	 	* @return void
 --
 local function saveData(PLUGIN: Plugin): nil
 	return PLUGIN:SetSetting(PLUGIN_DATA_SAVE_KEY, {
@@ -81,10 +81,10 @@ local function saveData(PLUGIN: Plugin): nil
 end
 
 -- function autosaveStop ( ): nil
---	    ^
---	    * Kills the while loop in the AUTOSAVE_COROUT coroutine making it ultimately turn dead when the task.wait yield is over
---	    *
---	    * @return void
+--	 	  	^
+--		  	* Kills the while loop in the AUTOSAVE_COROUT coroutine making it ultimately turn dead when the task.wait yield is over
+--		  	*
+--	 	 	* @return void
 --
 local function autosaveStop(): nil
 	AUTOSAVE_COROUT_KILL = true
@@ -93,12 +93,12 @@ local function autosaveStop(): nil
 end
 
 -- function autosaveStart ( PLUGIN: Plugin ): thread
---	    ^
---	    * Creates a coroutine whose purpose is to save the plugin data in a AUTOSAVE_INTERVAL interval
---	    *
---	    * @param PLUGIN Plugin Instance
---	    *
---	    * @return thread AUTOSAVE_COROUT coroutine
+--	 	  	^
+--		  	* Creates a coroutine whose purpose is to save the plugin data in a AUTOSAVE_INTERVAL interval
+--		  	*
+--		  	* @param PLUGIN Plugin Instance
+--		  	*
+--	 	 	* @return thread AUTOSAVE_COROUT coroutine
 --
 local function autosaveStart(PLUGIN: Plugin): thread
 	if AUTOSAVE_COROUT then autosaveStop() end
@@ -156,10 +156,10 @@ end
 
 
 -- method Set ( ...:number ): nil
---	  ^
---	  * Sets data
---	  *
---	  * @return void
+--	 	  ^
+--		  * Sets data
+--		  *
+--	 	  * @return void
 --
 function Module:Set(...:number): nil
 	self.LinesWritten, self.CharactersWritten = ...
@@ -168,13 +168,13 @@ function Module:Set(...:number): nil
 end
 
 -- method Init ( PLUGIN: Plugin, autosave: boolean ): nil
---	  ^
---	  * Retrieves all opened scripts and connects textdocument events
---	  *
---	  * @param PLUGIN Plugin Instance
---	  * @param autosave Defines whether or not data should saved in a AUTOSAVE_INTERVAL interval
---	  *
---	  * @return void
+--	 	  ^
+--		  * Retrieves all opened scripts and connects textdocument events
+--		  *
+--		  * @param PLUGIN Plugin Instance
+--		  * @param autosave Defines whether or not data should saved in a AUTOSAVE_INTERVAL interval
+--		  *
+--	 	  * @return void
 --
 function Module:Init(PLUGIN: Plugin, autosave: boolean): nil
 	for _, doc in ipairs(ScriptEditorService:GetScriptDocuments()) do
@@ -203,12 +203,12 @@ function Module:Init(PLUGIN: Plugin, autosave: boolean): nil
 end
 
 -- method Terminate ( PLUGIN: Plugin ): nil
---	  ^
---	  * Disconnects all connections and cleans all the traces left by the module (also saves the lines of code data)
---	  *
---	  * @param PLUGIN Plugin Instance
---	  *
---	  * @return void
+--	 	  ^
+--		  * Disconnects all connections and cleans all the traces left by the module (also saves the lines of code data)
+--		  *
+--		  * @param PLUGIN Plugin Instance
+--		  *
+--	 	  * @return void
 --
 function Module:Terminate(PLUGIN: Plugin): nil
 	autosaveStop()

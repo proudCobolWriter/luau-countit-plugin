@@ -8,12 +8,12 @@
 local Util = { }
 
 -- method DisconnectConnection ( connection: RBXScriptConnection, callback: () -> any ): nil
---	 	    ^
---		    * Shorthand function
---		    *
---		    * @param connection RBXScriptConnection
---		    *
---	 	    * @return string Random Hex string
+--	 	  ^
+--		  * Shorthand function
+--		  *
+--		  * @param connection RBXScriptConnection
+--		  *
+--	 	  * @return string Random Hex string
 --
 function Util:DisconnectConnection(connection: RBXScriptConnection, callback: () -> any): nil
 	if connection and typeof(connection) == "RBXScriptConnection" then
@@ -27,10 +27,10 @@ function Util:DisconnectConnection(connection: RBXScriptConnection, callback: ()
 end
 
 -- method RandomHex ( ): string
---	 	    ^
---		    * Generates a random hexadecimal lowercase string
---		    *
---	 	    * @return string Random Hex string
+--	 	  ^
+--		  * Generates a random hexadecimal lowercase string
+--		  *
+--	 	  * @return string Random Hex string
 --
 function Util:RandomHex(): string
 	return string.format("%x", Random.new():NextInteger(0, 1e5))
@@ -38,14 +38,14 @@ end
 
 
 -- method PlaySound ( sync: boolean, soundID: string | number, soundVolume: number ): Sound?
---	 	    ^
---		    * Plays a sound
---		    *
---		    * @param sync defines whether or not the method should be run synchronously (meaning the code yields till the sound has finished playing)
---		    * @param soundID roblox asset string or number (both works since it's concatenated)
---		    * @param soundVolume volume sound
---		    *
---	 	    * @return Sound Instance or nil
+--	 	  ^
+--		  * Plays a sound
+--		  *
+--		  * @param sync defines whether or not the method should be run synchronously (meaning the code yields till the sound has finished playing)
+--		  * @param soundID roblox asset string or number (both works since it's concatenated)
+--		  * @param soundVolume volume sound
+--		  *
+--	 	  * @return Sound Instance or nil
 --
 function Util:PlaySound(sync: boolean, soundID: string | number, soundVolume: number): Sound?
 	if not self.SoundWidget then return end
@@ -64,12 +64,12 @@ function Util:PlaySound(sync: boolean, soundID: string | number, soundVolume: nu
 end
 
 -- method DockSoundWidget ( PLUGIN: Plugin ): DockWidgetPluginGui
---	 	    ^
---		    * Docks a widget meant to play sounds
---		    *
---		    * @param PLUGIN Plugin Instance
---		    *
---	 	    * @return DockWidgetPluginGui Instance
+--	 	  ^
+--		  * Docks a widget meant to play sounds
+--		  *
+--		  * @param PLUGIN Plugin Instance
+--		  *
+--	 	  * @return DockWidgetPluginGui Instance
 --
 function Util:DockSoundWidget(PLUGIN: Plugin): DockWidgetPluginGui
 	assert(not self.SoundWidget, "Sound widget has already been docked")
@@ -89,10 +89,10 @@ function Util:DockSoundWidget(PLUGIN: Plugin): DockWidgetPluginGui
 end
 
 -- method UnDockSoundWidget ( ): nil
---	 	    ^
---		    * Undocks the widget
---		    *
---	 	    * @return void
+--	 	  ^
+--		  * Undocks the widget
+--		  *
+--	 	  * @return void
 --
 function Util:UnDockSoundWidget(): nil
 	assert(self.SoundWidget, "Sound widget has already been undocked")

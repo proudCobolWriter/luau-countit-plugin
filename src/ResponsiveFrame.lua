@@ -105,6 +105,8 @@ local function viewportSizeChanged()
 	)
 	
 	FRAME.Size = UDIM2(FRAME.Size.X.Scale, SAFECLAMP(FRAME.Size.X.Offset, MINIMUM_FRAME_HORIZONTAL_SIZE, VIEWPORTSIZE_X - VIEWPORT_MARGIN * 2), FRAME.Size.Y.Scale, FRAME.Size.Y.Offset)
+	
+	ResponsiveFrame:UpdateLabels()
 end
 
 local function withInBounds(mousePos)

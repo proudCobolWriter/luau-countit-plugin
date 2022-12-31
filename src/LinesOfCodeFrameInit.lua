@@ -428,7 +428,6 @@ local function pluginButtonClicked()
 	GUI.Enabled = GUIOpened
 	
 	PluginButton:SetActive(GUIOpened)
-	PluginButton.Icon = GUIOpened and "rbxassetid://11931509810" or "rbxassetid://11931593701"
 
 	if GUIOpened then
 		ScriptData, ComputationTime = ScanGameFunc(false)
@@ -639,9 +638,7 @@ GUI.Parent = CoreGui
 
 -- Declaring module
 
-
 local Module = {}
-
 
 function Module:Init(PLUGIN, PLUGIN_BUTTON)
 	Plugin = PLUGIN
@@ -655,10 +652,8 @@ function Module:Init(PLUGIN, PLUGIN_BUTTON)
 	EXIT_BUTTON_HOVER_CONNECTION = ExitButton.MouseEnter:Connect(exitButtonMouseHover)
 end
 
-
 function Module:Terminate()
 	buttonTerminate()
 end
-
 
 return Module
