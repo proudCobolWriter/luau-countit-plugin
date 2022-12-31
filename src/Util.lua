@@ -16,14 +16,14 @@ local Util = { }
 --	 	  * @return string Random Hex string
 --
 function Util:DisconnectConnection(connection: RBXScriptConnection, callback: () -> any): nil
-	if connection and typeof(connection) == "RBXScriptConnection" then
-		connection:Disconnect()
-		if callback then
-			callback()
-		end
-	end
-	
-	return
+    if connection and typeof(connection) == "RBXScriptConnection" then
+        connection:Disconnect()
+        if callback then
+            callback()
+        end
+    end
+    
+    return
 end
 
 -- method RandomHex ( ): string
@@ -33,7 +33,7 @@ end
 --	 	  * @return string Random Hex string
 --
 function Util:RandomHex(): string
-	return string.format("%x", Random.new():NextInteger(0, 1e5))
+    return string.format("%x", Random.new():NextInteger(0, 1e5))
 end
 
 
@@ -48,19 +48,19 @@ end
 --	 	  * @return Sound Instance or nil
 --
 function Util:PlaySound(sync: boolean, soundID: string | number, soundVolume: number): Sound?
-	if not self.SoundWidget then return end
-	local sound = Instance.new("Sound")
-	sound.SoundId = "rbxassetid://" .. soundID
-	sound.Volume = soundVolume
-	sound.Parent = self.SoundWidget
-	sound:Play()
-	
-	if sync then
-		sound.Ended:Wait()
-		sound:Destroy()
-	end
-	
-	return sound
+    if not self.SoundWidget then return end
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://" .. soundID
+    sound.Volume = soundVolume
+    sound.Parent = self.SoundWidget
+    sound:Play()
+    
+    if sync then
+        sound.Ended:Wait()
+        sound:Destroy()
+    end
+    
+    return sound
 end
 
 -- method DockSoundWidget ( PLUGIN: Plugin ): DockWidgetPluginGui
@@ -72,20 +72,20 @@ end
 --	 	  * @return DockWidgetPluginGui Instance
 --
 function Util:DockSoundWidget(PLUGIN: Plugin): DockWidgetPluginGui
-	assert(not self.SoundWidget, "Sound widget has already been docked")
-	assert(PLUGIN, "A plugin must be provided")
+    assert(not self.SoundWidget, "Sound widget has already been docked")
+    assert(PLUGIN, "A plugin must be provided")
 
-	local WidgetName = "SoundPlayer" .. self:RandomHex()
-	self.SoundWidget = PLUGIN:CreateDockWidgetPluginGui(WidgetName, DockWidgetPluginGuiInfo.new(
-		Enum.InitialDockState.Float,
-		false, true,
-		10, 10,
-		10, 10
-	))
+    local WidgetName = "SoundPlayer" .. self:RandomHex()
+    self.SoundWidget = PLUGIN:CreateDockWidgetPluginGui(WidgetName, DockWidgetPluginGuiInfo.new(
+        Enum.InitialDockState.Float,
+        false, true,
+        10, 10,
+        10, 10
+    ))
 
-	self.SoundWidget.Name, self.SoundWidget.Title = WidgetName, "Sound Player"
-	
-	return self.SoundWidget
+    self.SoundWidget.Name, self.SoundWidget.Title = WidgetName, "Sound Player"
+    
+    return self.SoundWidget
 end
 
 -- method UnDockSoundWidget ( ): nil
@@ -95,11 +95,11 @@ end
 --	 	  * @return void
 --
 function Util:UnDockSoundWidget(): nil
-	assert(self.SoundWidget, "Sound widget has already been undocked")
-	
-	self.SoundWidget:Destroy()
-	
-	return
+    assert(self.SoundWidget, "Sound widget has already been undocked")
+    
+    self.SoundWidget:Destroy()
+    
+    return
 end
 
 
