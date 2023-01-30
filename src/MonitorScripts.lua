@@ -2,7 +2,6 @@
 -- @module MonitorScripts  Self-explanatory, watches script changes via ScriptEditorService
 -- Last edited the 25/12/2022
 -- Written by poggers
--- Merry Christmas!
 -- */
 
 -- Retrieving services
@@ -31,6 +30,7 @@ local AUTOSAVE_COROUT = nil
 -- States
 
 local AUTOSAVE_COROUT_KILL = false
+local LAST_COMMAND = ""
 
 -- Containers
 
@@ -41,6 +41,7 @@ local SCRIPTS_OPENED = {}
 local Module = {
 	CharactersWritten = 0,
 	LinesWritten = 0,
+	CharactersRealSize = 0
 }
 
 -- Main functions
@@ -64,6 +65,38 @@ local function isScriptOpened(doc: ScriptDocument): ...any
 	return scriptOpened, scriptIndex
 end
 
+-- function getStringSize ( str: string ): number
+--	    ^
+--	    * Determines the size in bytes (->not bits<-) of a given string, taking in account special utf8 characters
+--	    * Some characters such as emojis can take up to 17 bytes! Thanks to the string library, we can easily know the size of a given string in bytes
+--	    * You can read more here: https://devforum.roblox.com/t/advanced-amount-of-gc-memory-taken-up-by-common-object-types/346205
+--	    *
+--	    * @param str inputted string
+--	    *
+--	    * @return number the size taken in memory by string str
+--
+local function getStringSize(str: string): number
+	return string.len(str)
+end
+
+-- function setChanges ( changes: string ): nil
+--	    ^
+--	    * Increments values Module.LinesWritten, Module.CharactersWritten and Module.CharactersRealSize
+--	    *
+--	    * @param changes difference string
+--	    *
+--	    * @return void
+--
+local function setChanges(changes: string): nil
+	local _, newLines = changes:gsub('\n', '\n')
+			
+	Module.LinesWritten = math.min(Module.LinesWritten + newLines, MAXIMUM_VALUE)
+	Module.CharactersWritten = math.min(Module.CharactersWritten + (changes:sub(-1) == "\n" and 0 or #(changes:gsub("^%s+", ""))), MAXIMUM_VALUE)
+	Module.CharactersRealSize = math.min(Module.CharactersRealSize + getStringSize(changes), MAXIMUM_VALUE)
+
+	return
+end
+
 -- function saveData ( PLUGIN: Plugin ): nil
 --	    ^
 --	    * Saves plugin data (lines & chars written...)
@@ -76,7 +109,8 @@ local function saveData(PLUGIN: Plugin): nil
 	return PLUGIN:SetSetting(PLUGIN_DATA_SAVE_KEY, {
 		localTime = DateTime.now():ToLocalTime(),
 		linesWritten = Module.LinesWritten,
-		charsWritten = Module.CharactersWritten
+		charsWritten = Module.CharactersWritten,
+		charsRealSize = Module.CharactersRealSize
 	})
 end
 
@@ -142,13 +176,18 @@ end
 
 local function scriptEdited(doc: ScriptDocument, changes: any): nil
 	changes = changes[1] and changes[1].text
-	local scriptOpened = isScriptOpened(doc)
-	
-	if scriptOpened and changes then
-		local _, newLines = changes:gsub('\n', '\n')
-		
-		Module.LinesWritten = math.min(Module.LinesWritten + newLines, MAXIMUM_VALUE)
-		Module.CharactersWritten = math.min(Module.CharactersWritten + (changes:sub(-1) == "\n" and 0 or #(changes:gsub("^%s+", ""))), MAXIMUM_VALUE)
+
+	-- For some reasons, CommandBar-related changes behave differently and return the whole line instead of only the new characters,
+	-- Therefore, we need to store the latest command string to then compare it with the new text value to keep track of the changes
+	if doc:IsCommandBar() and changes then
+		local t = #LAST_COMMAND - #changes
+		local commandBarChanges = math.sign(t) == -1 and changes:sub(t) or ""
+
+		LAST_COMMAND = changes
+
+		setChanges(commandBarChanges)
+	elseif changes then
+		if isScriptOpened(doc) then setChanges(changes) end
 	end
 	
 	return
@@ -161,8 +200,8 @@ end
 --	  *
 --	  * @return void
 --
-function Module:Set(...:number): nil
-	self.LinesWritten, self.CharactersWritten = ...
+function Module:Set(...: number): nil
+	self.LinesWritten, self.CharactersWritten, self.CharactersRealSize = ...
 	
 	return
 end
@@ -183,15 +222,17 @@ function Module:Init(PLUGIN: Plugin, autosave: boolean): nil
 	
 	local data = PLUGIN:GetSetting(PLUGIN_DATA_SAVE_KEY)
 	local localTime = DateTime.now():ToLocalTime()
-	
+
+	print(data.localTime.Day ~= localTime.Day or data.localTime.Month ~= localTime.Month or data.localTime.Year ~= localTime.Year, data.localTime, localTime)
 	if not data or data.localTime.Day ~= localTime.Day or data.localTime.Month ~= localTime.Month or data.localTime.Year ~= localTime.Year then
 		data = {}
 		data["localTime"] = localTime
 		data["linesWritten"] = 0
 		data["charsWritten"] = 0
+		data["charsRealSize"] = 0
 	end
 	
-	self:Set(data.linesWritten, data.charsWritten)
+	self:Set(data.linesWritten or 0, data.charsWritten or 0, data.charsRealSize or 0)
 	
 	if autosave then autosaveStart(PLUGIN) end
 	

@@ -2,8 +2,11 @@
 -- @module Util  Just a bunch of utility functions to complement the plugin and keep things clean
 -- Last edited the 25/12/2022
 -- Written by poggers
--- Merry Christmas!
 -- */
+
+local SIZE_ABBREVIATIONS = {
+	"KB", "MB", "GB", "TB" -- going to zettabytes is probably not necessary here
+}
 
 local Util = { }
 
@@ -36,6 +39,24 @@ function Util:RandomHex(): string
 	return string.format("%x", Random.new():NextInteger(0, 1e5))
 end
 
+-- method AbbreviateSize ( size: number ): string
+--	  ^
+--	  * Abbreviates a size value given in kilobytes
+--	  *
+--	  * @param size number
+--	  *
+--	  * @return tuple containing the abbreviation string plus the abbreviated number
+--
+function Util:AbbreviateSize(size: number): ...number | string
+	local abbreviationIndex = math.floor(math.log(size, 1e3))
+	local abbreviation = SIZE_ABBREVIATIONS[abbreviationIndex]
+
+	if abbreviation then
+		return abbreviation, size / (1e3 ^ abbreviationIndex)
+	end
+
+	return "B", size
+end
 
 -- method PlaySound ( sync: boolean, soundID: string | number, soundVolume: number ): Sound?
 --	  ^

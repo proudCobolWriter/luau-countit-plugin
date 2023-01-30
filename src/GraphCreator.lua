@@ -2,7 +2,6 @@
 -- @module GraphCreator  Creates and animates graphs using TweenService
 -- Last edited the 25/12/2022
 -- Written by poggers
--- Merry Christmas!
 -- */
 
 local GraphCreator = {
@@ -166,6 +165,7 @@ function GraphCreator.newGraph(parent, parts, data, maxValue, barTransparency)
 		if i ~= 1 and data[1][1] / maxValue == 1 then continue end
 		local ui = Instance.new("Frame")
 		ui.Size = UDIM2(0, 0, 1, 0)
+		ui.Position = UDIM2(ui.Position.X.Scale, i > 1 and 2 or 0, ui.Position.Y.Scale, ui.Position.Y.Offset)
 		ui.BorderSizePixel = 0
 		ui.BackgroundColor3 = data[i][2]
 		ui.ZIndex = parts - i
@@ -221,7 +221,7 @@ function GraphCreator.newGraph(parent, parts, data, maxValue, barTransparency)
 		end
 		
 		local tweenCompleted = false
-		local tween = TweenService:Create(ui, tweenInfo, { Size = UDim2.new(sum, 0, 1, 0) })
+		local tween = TweenService:Create(ui, tweenInfo, { Size = UDim2.new(sum, i > 1 and -2 or 0, 1, 0) })
 		
 		tween:Play()
 		

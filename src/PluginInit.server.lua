@@ -2,7 +2,6 @@
 -- @script PluginInit  Setups plugin and handles plugin-studio interactions
 -- Last edited the 25/12/2022
 -- Written by poggers
--- Merry Christmas!
 -- */
 
 -- Retrieving services

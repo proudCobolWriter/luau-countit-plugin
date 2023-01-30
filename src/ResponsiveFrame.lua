@@ -2,7 +2,6 @@
 -- @module ResponsiveFrame  Handles the position and the size of a given frame
 -- Last edited the 25/12/2022
 -- Written by poggers
--- Merry Christmas!
 -- */
 
 local ResponsiveFrame = { IS_MOUSE_PLUGIN = false, CanDrag = true, TrimmableLabels = {}, RenderBindings = {} }
@@ -166,8 +165,7 @@ function ResponsiveFrame:Start(frameIndex, onResizeCallback)
 				end
 				
 				local distX = (mousePosition - FRAME.AbsolutePosition).X
-				local viewportMargin = ResponsiveFrame.IS_MOUSE_PLUGIN and VIEWPORT_MARGIN or GuiService:GetGuiInset().Y / 2
-				
+
 				FRAME.Size = FRAME.Size:Lerp(UDIM2(FRAME.Size.X.Scale, SAFECLAMP(distX, MINIMUM_FRAME_HORIZONTAL_SIZE, VIEWPORTSIZE_X - VIEWPORT_MARGIN * 2), FRAME.Size.Y.Scale, FRAME.Size.Y.Offset), 0.50)
 				
 				self:UpdateLabels()
@@ -192,8 +190,9 @@ function ResponsiveFrame:Start(frameIndex, onResizeCallback)
 	self.RenderBindings[bindingName] = true
 end
 
-function ResponsiveFrame:Stop(frameIndex)
+function ResponsiveFrame:Stop(frameIndex, onResizeCallback)
 	local wasDragging = DRAGGING
+
 	setDraggerUI(true)
 	setCursorUI()
 	DRAGGING = false
@@ -201,14 +200,16 @@ function ResponsiveFrame:Stop(frameIndex)
 	
 	local bindingName = "LOC" .. frameIndex .. "Update"
 	RunService:UnbindFromRenderStep(bindingName)
+
 	local timer = 0
 	RunService:BindToRenderStep(bindingName .. "Lerp", RENDER_PRIORITY.Value, function(dt)
 		timer += dt
-		if timer > 0.25 then
+		if timer > 0.25 or not FRAME then
 			RunService:UnbindFromRenderStep(bindingName .. "Lerp")
 			return
 		end
-		if FRAME and FRAME_TARGET_POSITION and wasDragging then
+
+		if wasDragging and FRAME_TARGET_POSITION then
 			updateFramePosition()
 		end
 	end)

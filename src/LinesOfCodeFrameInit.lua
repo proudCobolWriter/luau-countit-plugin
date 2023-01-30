@@ -2,7 +2,6 @@
 -- @module LinesOfCodeFrameInit  Initializes LinesOfCode Frame
 -- Last edited the 25/12/2022
 -- Written by poggers
--- Merry Christmas!
 -- */
 
 -- Probably one of the messiest and dirtiest code I've ever written but as Sun Tzu of programming once said - if it works, call it a day!
@@ -67,7 +66,7 @@ local LINES_SCAN_FORMAT = "%i lines of code scanned (%i chars)"
 local LINES_SCAN_FORMAT_SINGULAR = "%i line of code scanned (%i chars)"
 local LINES_SCAN_ANIM_DURATION = 1.5
 
-local OPENING_ANIM_TWEENINFO = TweenInfo.new(0.50, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+local OPENING_ANIM_TWEENINFO = TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
 local MINIMUN_VERTICAL_BACKGROUND_SIZE = 200
 
 local SCRIPTS_COLOR_PALETTE = {
@@ -89,7 +88,7 @@ local SERVICE_COLORS = {
 }
 
 local BLOCK_GUI_ELEMENTS = { -- {gui instance, bottom margin}
-	{HeaderLabel, 5},
+	{HeaderLabel, 10},
 	{Bar, 5},
 	{BarLabels, 5},
 	{Statistics1Frame, 10},
@@ -97,18 +96,18 @@ local BLOCK_GUI_ELEMENTS = { -- {gui instance, bottom margin}
 	{Bar2Labels, 5},
 	{Bar3, 5},
 	{Bar3Labels, 0},
-	{Statistics2Frame, 20},
+	{Statistics2Frame, 15},
 }
 
 local TRIMMABLE_GUI_LABELS = {
 	["TrueLine"] = true,
-	["TrueLineNoComment"] = true,
-	["FooterLabel"] = true
+	["TrueLineNoComment"] = true
 }
 
 -- CONNECTIONS
 
 local REPOSITIONGUIELEMENTS_EVENT_CONNECTION = nil
+local FOOTER_TEXT_BOUNDS_CHANGED_CONNECTION = nil
 local BUTTON_CLICKED_CONNECTION = nil
 
 local RECOMPUTE_BUTTON_HOVER_CONNECTION = nil
@@ -194,28 +193,31 @@ local function animateLabelNumbers()
 	end)
 end
 
-local function animateBackgroundSize(animate, ignoreAnimatedBackgroundSize) -- one time animation
-	if not AnimatedBackgroundSize or ignoreAnimatedBackgroundSize then
-		AnimatedBackgroundSize = true
+local function animateBackgroundSize(animate)
+	AnimatedBackgroundSize = true
 
-		local sum = 0
-		for _, element in ipairs(BLOCK_GUI_ELEMENTS) do
-			local uigridlayout = element[1]:FindFirstChildWhichIsA("UIGridLayout")
-			if not uigridlayout then
-				sum += element[1].AbsoluteSize.Y + element[2]
-			else
-				sum += uigridlayout.AbsoluteContentSize.Y + element[2]
-			end
-		end
+	local sum = 0
+	for _, element in ipairs(BLOCK_GUI_ELEMENTS) do
+		local uigridlayout = element[1]:FindFirstChildWhichIsA("UIGridLayout")
+		local isTextlabel = element[1]:IsA("TextLabel")
 
-		local targetSize = UDim2.new(Background.Size.X.Scale, Background.Size.X.Offset, Background.Size.Y.Scale, MAX(sum, MINIMUN_VERTICAL_BACKGROUND_SIZE))
-
-		if animate then
-			local tween = TweenService:Create(Background, OPENING_ANIM_TWEENINFO, { Size = targetSize })
-			tween:Play()
+		if uigridlayout then
+			sum += uigridlayout.AbsoluteContentSize.Y
+		elseif isTextlabel and element[1] ~= HeaderLabel then
+			sum += element[1].TextBounds.Y
 		else
-			Background.Size = targetSize
+			sum += element[1].AbsoluteSize.Y
 		end
+		sum += element[2]
+	end
+
+	local targetSize = UDim2.new(Background.Size.X.Scale, Background.Size.X.Offset, Background.Size.Y.Scale, MAX(sum, MINIMUN_VERTICAL_BACKGROUND_SIZE))
+
+	if animate then
+		local tween = TweenService:Create(Background, OPENING_ANIM_TWEENINFO, { Size = targetSize })
+		tween:Play()
+	else
+		Background.Size = targetSize
 	end
 end
 
@@ -223,15 +225,21 @@ local function animateGUIElementsInBlock(animate)
 	local targetPositions = {[1] = BLOCK_GUI_ELEMENTS[1][1].Position}
 	for order = 2, #BLOCK_GUI_ELEMENTS do
 		local gui = BLOCK_GUI_ELEMENTS[order][1]
-		local uigridlayout = BLOCK_GUI_ELEMENTS[order - 1][1]:FindFirstChildWhichIsA("UIGridLayout")
 
-		local ySize =  BLOCK_GUI_ELEMENTS[order - 1][1].AbsoluteSize.Y
+		local uigridlayout = BLOCK_GUI_ELEMENTS[order - 1][1]:FindFirstChildWhichIsA("UIGridLayout")
+		local isTextlabel = BLOCK_GUI_ELEMENTS[order - 1][1]:IsA("TextLabel")
+
+		local ySize
 		if uigridlayout then
 			ySize = uigridlayout.AbsoluteContentSize.Y
+		elseif isTextlabel and BLOCK_GUI_ELEMENTS[order - 1][1] ~= HeaderLabel then
+			ySize = BLOCK_GUI_ELEMENTS[order - 1][1].TextBounds.Y
+		else
+			ySize = BLOCK_GUI_ELEMENTS[order - 1][1].AbsoluteSize.Y
 		end
 
-		local previousElementY = targetPositions[order - 1].Y.Offset + ySize + BLOCK_GUI_ELEMENTS[order - 1][2]
-		local newElementPos = UDim2.new(gui.Position.X.Scale, gui.Position.X.Offset, gui.Position.Y.Scale, previousElementY)
+		local newElementY = targetPositions[order - 1].Y.Offset + ySize + BLOCK_GUI_ELEMENTS[order - 1][2]
+		local newElementPos = UDim2.new(gui.Position.X.Scale, gui.Position.X.Offset, gui.Position.Y.Scale, newElementY)
 
 		targetPositions[order] = newElementPos
 
@@ -313,6 +321,7 @@ local function updateLabel(frame, labelName, animate, insert, ...)
 			end
 
 			if animate then
+				label.TextTransparency = 0
 				TweenService:Create(label, OPENING_ANIM_TWEENINFO, { TextTransparency = 0 }):Play()
 			else
 				label.TextTransparency = 0
@@ -352,7 +361,7 @@ local function createGraphs(animate)
 	end)
 
 	REPOSITIONGUIELEMENTS_EVENT_CONNECTION = RepositionGUIElementsEvent.Event:Connect(function(newValue)
-		animateBackgroundSize(false, true)
+		animateBackgroundSize(false)
 		animateGUIElementsInBlock(false)
 	end)
 
@@ -435,6 +444,8 @@ local function pluginButtonClicked()
 			GraphCreator.updateTextLabels(false, GraphCreator.percentageLabels, Background)
 		end)
 
+		print(ScriptData)
+
 		local _, startingLinesOfCode, startingCharacters = matchNumber(HeaderLabel)
 		table.insert(InterpolatedLabels, { HeaderLabel, { ScriptData.totalLines > 1 and LINES_SCAN_FORMAT or LINES_SCAN_FORMAT_SINGULAR }, tonumber(startingLinesOfCode), ScriptData.totalLines, tonumber(startingCharacters), ScriptData.totalChars })
 		startingLinesOfCode, startingCharacters = nil, nil
@@ -445,7 +456,7 @@ local function pluginButtonClicked()
 		end
 		
 		createGraphs(not AnimatedLabels)
-		animateBackgroundSize(not AnimatedBackgroundSize, true)
+		animateBackgroundSize(not AnimatedBackgroundSize)
 		animateGUIElementsInBlock(true)
 
 		updateLabel(Statistics1Frame, "Module", true, true, ScriptData.scriptData.ModuleScript > 1 and "s" or "", ScriptData.scriptData.ModuleScript)
@@ -456,15 +467,29 @@ local function pluginButtonClicked()
 		updateLabel(Statistics1Frame, "TrueLineNoComment", true, true, ScriptData.totalLinesNoComment)
 		
 		if ResponsiveFrame.IS_MOUSE_PLUGIN then
-			updateLabel(Background, "FooterLabel", true, false, MonitorScripts.LinesWritten, MonitorScripts.LinesWritten > 1 and "s" or "", MonitorScripts.CharactersWritten, MonitorScripts.CharactersWritten > 1 and "s" or "")
+			local numAbbreviation, abbreviatedNum = Util:AbbreviateSize(MonitorScripts.CharactersRealSize)
+			updateLabel(Background, "FooterLabel", true, false, MonitorScripts.LinesWritten, MonitorScripts.LinesWritten > 1 and "s" or "", MonitorScripts.CharactersWritten, MonitorScripts.CharactersWritten > 1 and "s" or "", abbreviatedNum, numAbbreviation)
 
-			local _, startingLinesOfCode, startingCharacters = matchNumber(FooterLabel)
-			table.insert(InterpolatedLabels, { FooterLabel, { FooterLabel:FindFirstChild("textFormat") and FooterLabel:FindFirstChild("textFormat").Value or "", interpolatedLabelCallback }, tonumber(startingLinesOfCode), MonitorScripts.LinesWritten, MonitorScripts.LinesWritten > 1 and "s" or "", MonitorScripts.LinesWritten > 1 and "s" or "", tonumber(startingCharacters), MonitorScripts.CharactersWritten, MonitorScripts.CharactersWritten > 1 and "s" or "", MonitorScripts.CharactersWritten > 1 and "s" or "" })
-			startingLinesOfCode, startingCharacters = nil, nil
+			local footerFormat = FooterLabel:FindFirstChild("textFormat") and FooterLabel:FindFirstChild("textFormat").Value or ""
+			local _, startingLinesOfCode, startingCharacters, startingSize = matchNumber(FooterLabel)
+			table.insert(InterpolatedLabels, { FooterLabel, { footerFormat, interpolatedLabelCallback }, tonumber(startingLinesOfCode), MonitorScripts.LinesWritten, MonitorScripts.LinesWritten > 1 and "s" or "", MonitorScripts.LinesWritten > 1 and "s" or "", tonumber(startingCharacters), MonitorScripts.CharactersWritten, MonitorScripts.CharactersWritten > 1 and "s" or "", MonitorScripts.CharactersWritten > 1 and "s" or "", tonumber(startingSize), abbreviatedNum, numAbbreviation, numAbbreviation })
+		
+			local lastBounds = FooterLabel.TextBounds
+			FOOTER_TEXT_BOUNDS_CHANGED_CONNECTION = FooterLabel:GetPropertyChangedSignal("TextBounds"):Connect(function()
+				local newBounds = FooterLabel.TextBounds
+
+				if newBounds.Y ~= lastBounds.Y then
+					print("changed")
+					animateBackgroundSize(false)
+					lastBounds = newBounds
+				end
+			end)
 		end
 		
 		animateLabelNumbers()
 
+		ResponsiveFrame:UpdateLabels()
+		
 		ExitButton.Position = UDim2.new(1, ExitButton.Position.X.Offset, 0, 3)
 		ExitButtonLabel.Position = UDim2.new(1, ExitButtonLabel.Position.X.Offset, 0, 3)
 		ExitButtonShadow.Position = UDim2.new(1, ExitButtonShadow.Position.X.Offset, 0, 4)
@@ -506,24 +531,32 @@ local function pluginButtonClicked()
 		GraphCreator.cleanupGraphs()
 		ResponsiveFrame.TrimmableLabels = {}
 
-		Bar.BackgroundTransparency = ScriptData.totalLines > 0 and 1 or 0
-		Bar2.BackgroundTransparency = 0
-		Bar3.BackgroundTransparency = ScriptData.totalLines > 0 and 1 or 0
-
 		if not ResponsiveFrame.IS_MOUSE_PLUGIN then
 			for _, coreGuiType in ipairs(CoreGuisEnabled) do
 				game:GetService("StarterGui"):SetCoreGuiEnabled(coreGuiType, true)
 			end
 		end
 	end
+
+	Bar.BackgroundTransparency = ScriptData.totalLines > 0 and 1 or 0
+	Bar2.BackgroundTransparency = 0
+	Bar3.BackgroundTransparency = ScriptData.totalLines > 0 and 1 or 0
 	
 	Util:PlaySound(false, BUTTON_CLICKED_SOUNDID, BUTTON_CLICKED_VOLUME)
 end
 
 local function buttonTerminate()
+	-- Clean up connections
+	BUTTON_CLICKED_CONNECTION:Disconnect()
+	RECOMPUTE_BUTTON_CLICKED_CONNECTION:Disconnect()
+	RECOMPUTE_BUTTON_HOVER_CONNECTION:Disconnect()
+	EXIT_BUTTON_CLICKED_CONNECTION:Disconnect()
+	EXIT_BUTTON_HOVER_CONNECTION:Disconnect()
+
 	if GUIOpened then
 		pluginButtonClicked()
 	end
+
 	GUI.Parent = nil
 	GUI:Destroy()
 end
@@ -582,7 +615,7 @@ local function recomputeButtonClicked() -- Does the same as void pluginButtonCli
 		end
 		
 		createGraphs(false)
-		animateBackgroundSize(false, true)
+		animateBackgroundSize(false)
 		animateGUIElementsInBlock(false)
 
 		updateLabel(Statistics1Frame, "Module", false, true, ScriptData.scriptData.ModuleScript > 1 and "s" or "", ScriptData.scriptData.ModuleScript)
@@ -593,11 +626,12 @@ local function recomputeButtonClicked() -- Does the same as void pluginButtonCli
 		updateLabel(Statistics1Frame, "TrueLineNoComment", false, true, ScriptData.totalLinesNoComment)
 		
 		if ResponsiveFrame.IS_MOUSE_PLUGIN then
-			updateLabel(Background, "FooterLabel", false, false, MonitorScripts.LinesWritten, MonitorScripts.LinesWritten > 1 and "s" or "", MonitorScripts.CharactersWritten, MonitorScripts.CharactersWritten > 1 and "s" or "")
+			local numAbbreviation, abbreviatedNum = Util:AbbreviateSize(MonitorScripts.CharactersRealSize)
+			updateLabel(Background, "FooterLabel", true, false, MonitorScripts.LinesWritten, MonitorScripts.LinesWritten > 1 and "s" or "", MonitorScripts.CharactersWritten, MonitorScripts.CharactersWritten > 1 and "s" or "", abbreviatedNum, numAbbreviation)
 
-			local _, startingLinesOfCode, startingCharacters = matchNumber(FooterLabel)
-			table.insert(InterpolatedLabels, { FooterLabel, { FooterLabel:FindFirstChild("textFormat") and FooterLabel:FindFirstChild("textFormat").Value or "", interpolatedLabelCallback }, tonumber(startingLinesOfCode), MonitorScripts.LinesWritten, MonitorScripts.LinesWritten > 1 and "s" or "", MonitorScripts.LinesWritten > 1 and "s" or "", tonumber(startingCharacters), MonitorScripts.CharactersWritten, MonitorScripts.CharactersWritten > 1 and "s" or "", MonitorScripts.CharactersWritten > 1 and "s" or "" })
-			startingLinesOfCode, startingCharacters = nil, nil
+			local footerFormat = FooterLabel:FindFirstChild("textFormat") and FooterLabel:FindFirstChild("textFormat").Value or ""
+			local _, startingLinesOfCode, startingCharacters, startingSize = matchNumber(FooterLabel)
+			table.insert(InterpolatedLabels, { FooterLabel, { footerFormat, interpolatedLabelCallback }, tonumber(startingLinesOfCode), MonitorScripts.LinesWritten, MonitorScripts.LinesWritten > 1 and "s" or "", MonitorScripts.LinesWritten > 1 and "s" or "", tonumber(startingCharacters), MonitorScripts.CharactersWritten, MonitorScripts.CharactersWritten > 1 and "s" or "", MonitorScripts.CharactersWritten > 1 and "s" or "", tonumber(startingSize), abbreviatedNum, numAbbreviation, numAbbreviation })
 		end
 		
 		animateLabelNumbers()
