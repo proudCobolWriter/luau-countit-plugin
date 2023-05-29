@@ -11,7 +11,7 @@ Ever dreamt of flexing to your friends with the amount of work you put into your
     <a href="https://github.com/proudCobolWriter/roblox-luau-countit-plugin/issues/new/choose">Report bug or request feature</a>
 <br>
 <br>
-<img src="https://github-readme-stats.vercel.app/api/pin/?username=proudCobolWriter&repo=roblox-luau-countit-plugin&theme=dark&title_color=fff&text_color=fff&icon_color=fff" />
+<img src="https://github-readme-stats-sigma-five.vercel.app/api/pin/?username=proudCobolWriter&repo=roblox-luau-countit-plugin&theme=dark&title_color=fff&text_color=fff&icon_color=fff" />
 </div>
 
 ---
